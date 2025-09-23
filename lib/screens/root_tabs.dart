@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:first_version/screens/Shared/user.details.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RootTabs extends StatefulWidget {
   final UserProfile profile;
@@ -68,11 +69,12 @@ class _RootTabsState extends State<RootTabs> {
               fontSize: 10,  // Smaller label text
               fontWeight: FontWeight.w600,
             ),
+
           ),
         ),
       ), child:  NavigationBar(
         selectedIndex: _index,
-        onDestinationSelected: (i) => setState(() => _index = i),
+        onDestinationSelected: (i) => setState(() => _index = i), // i is for which page to open on the bar
 
         destinations: [
           const NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
@@ -86,7 +88,7 @@ class _RootTabsState extends State<RootTabs> {
           const NavigationDestination(icon: Icon(Icons.chat_bubble_outline), selectedIcon: Icon(Icons.chat_bubble), label: 'Messages'),
           const NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profile'),
         ],
-      ),
+       ),
       ),
     );
   }

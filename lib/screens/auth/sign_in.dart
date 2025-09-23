@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:first_version/screens/Shared/user.details.dart';
 import 'package:first_version/screens/root_tabs.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -49,118 +50,183 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     final c = Theme.of(context).colorScheme;
-    return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.white, title: const Text('')),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 520),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 28,
-                      backgroundColor: c.primary.withOpacity(.12),
-                      child: Icon(Icons.work, color: c.primary, size: 28),
-                    ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Welcome',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge
-                              ?.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                        Text(
-                          'Blue & white theme • Sign in to continue',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Text('I am a', style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 8),
-                SegmentedButton<String>(
-                  segments: const [
-                    ButtonSegment(value: 'candidate', label: Text('Job Seeker'), icon: Icon(Icons.person)),
-                    ButtonSegment(value: 'business', label: Text('Hiring Manager'), icon: Icon(Icons.business)),
-                  ],
-                  selected: {_accountType},
-                  onSelectionChanged: (s) => setState(() => _accountType = s.first),
-                ),
-                const SizedBox(height: 16),
-                Card(
-                  elevation: 1,
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
+
+    return Theme(
+      data: Theme.of(context).copyWith(
+        textTheme: GoogleFonts.oswaldTextTheme().copyWith(
+          headlineLarge: GoogleFonts.oswald(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87, // Explicit color
+          ),
+          headlineMedium: GoogleFonts.oswald(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87, // Explicit color
+          ),
+          titleMedium: GoogleFonts.oswald(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            color: Colors.black87, // Explicit color
+          ),
+          bodyLarge: GoogleFonts.oswald(
+            fontSize: 16,
+            color: Colors.black87, // Explicit color
+          ),
+          bodyMedium: GoogleFonts.oswald(
+            fontSize: 14,
+            color: Colors.black54, // Explicit color
+          ),
+          labelLarge: GoogleFonts.oswald(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.white, // For buttons
+          ),
+        ),
+        // Fix input field text color
+        inputDecorationTheme: InputDecorationTheme(
+          border: const OutlineInputBorder(),
+          labelStyle: GoogleFonts.anton(color: Colors.black54),
+          hintStyle: GoogleFonts.oswald(color: Colors.black38),
+        ),
+      ),
+      child: Scaffold(
+        appBar: AppBar(backgroundColor: Colors.white, title: const Text('')),
+        body: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 520),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 28,
+                        backgroundColor: c.primary.withOpacity(.12),
+                        child: Icon(Icons.work, color: c.primary, size: 28),
+                      ),
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextFormField(
-                            controller: _emailCtrl,
-                            decoration: const InputDecoration(
-                              labelText: 'Email',
-                              hintText: 'you@example.com',
-                            ),
-                            keyboardType: TextInputType.emailAddress,
-                            validator: (v) =>
-                                (v == null || !RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(v))
-                                    ? 'Enter a valid email'
-                                    : null,
+                          Text(
+                            'Welcome',
+                            style: Theme.of(context).textTheme.headlineMedium,
                           ),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                            controller: _passwordCtrl,
-                            decoration: const InputDecoration(labelText: 'Password'),
-                            obscureText: true,
-                            validator: (v) => (v == null || v.length < 6)
-                                ? 'Min 6 characters'
-                                : null,
-                          ),
-                          const SizedBox(height: 16),
-                          SizedBox(
-                            width: double.infinity,
-                            child: FilledButton(
-                              onPressed: _isLoading ? null : _signIn,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
-                                child: _isLoading
-                                    ? const SizedBox(
-                                        width: 18,
-                                        height: 18,
-                                        child: CircularProgressIndicator(strokeWidth: 2),
-                                      )
-                                    : const Text('Sign In'),
-                              ),
-                            ),
+                          Text(
+                            'Sign in to continue',
+                            style: Theme.of(context).textTheme.bodyLarge,
                           ),
                         ],
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text('I am a', style: Theme.of(context).textTheme.titleMedium),
+                  const SizedBox(height: 8),
+                  SegmentedButton<String>(
+                    segments: const [
+                      ButtonSegment(
+                        value: 'candidate',
+                        label: Text('Job Seeker'),
+                        icon: Icon(Icons.person),
+                      ),
+                      ButtonSegment(
+                        value: 'business',
+                        label: Text('Hiring Manager'),
+                        icon: Icon(Icons.business),
+                      ),
+                    ],
+                    selected: {_accountType},
+                    onSelectionChanged: (s) => setState(() => _accountType = s.first),
+                  ),
+                  const SizedBox(height: 16),
+                  Card(
+                    elevation: 1,
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: _emailCtrl,
+                              style: GoogleFonts.oswald(
+                                fontSize: 16,
+                                color: Colors.black87, // Explicit color for input text
+                              ),
+                              decoration: InputDecoration(
+                                labelText: 'Email',
+                                hintText: 'you@example.com',
+                                labelStyle: GoogleFonts.oswald(color: Colors.black54),
+                                hintStyle: GoogleFonts.oswald(color: Colors.black38),
+                              ),
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (v) =>
+                              (v == null || !RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(v))
+                                  ? 'Enter a valid email'
+                                  : null,
+                            ),
+                            const SizedBox(height: 12),
+                            TextFormField(
+                              controller: _passwordCtrl,
+                              style: GoogleFonts.oswald(
+                                fontSize: 16,
+                                color: Colors.black87, // Explicit color for input text
+                              ),
+                              decoration: InputDecoration(
+                                labelText: 'Password',
+                                labelStyle: GoogleFonts.oswald(color: Colors.black54),
+                              ),
+                              obscureText: true,
+                              validator: (v) => (v == null || v.length < 6)
+                                  ? 'Min 6 characters'
+                                  : null,
+                            ),
+                            const SizedBox(height: 16),
+                            SizedBox(
+                              width: double.infinity,
+                              child: FilledButton(
+                                onPressed: _isLoading ? null : _signIn,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  child: _isLoading
+                                      ? const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  )
+                                      : Text(
+                                    'Sign In',
+                                    style: GoogleFonts.oswald(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                TextButton(
-                  onPressed: _goToSignUp,
-                  child: const Text('New here? Create an account'),
-                ),
-              ],
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: _goToSignUp,
+                    child: Text(
+                      'New here? Create an account',
+                      style: GoogleFonts.oswald(fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
-  }
-}
-
-
+  }}
