@@ -47,7 +47,8 @@ class _RootTabsState extends State<RootTabs> {
 
     final items = <BottomNavigationBarItem>[
       const BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
-      const BottomNavigationBarItem(icon: Icon(Icons.folder_open), label: 'Applications'),
+      const BottomNavigationBarItem(icon: Icon(Icons.folder_open), label: 'Applications',
+      ),
       BottomNavigationBarItem(
         icon: Icon(isCandidate ? Icons.badge_outlined : Icons.settings_suggest_outlined),
         label: isCandidate ? 'My Job' : 'Management',
@@ -60,12 +61,23 @@ class _RootTabsState extends State<RootTabs> {
       body: SafeArea(
         child: IndexedStack(index: _index, children: pages),
       ),
-      bottomNavigationBar: NavigationBar(
+      bottomNavigationBar:Theme(data: Theme.of(context).copyWith(
+        navigationBarTheme: NavigationBarThemeData(
+          labelTextStyle: WidgetStateProperty.all(
+            const TextStyle(
+              fontSize: 10,  // Smaller label text
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ), child:  NavigationBar(
         selectedIndex: _index,
         onDestinationSelected: (i) => setState(() => _index = i),
+
         destinations: [
           const NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
-          const NavigationDestination(icon: Icon(Icons.folder_open), selectedIcon: Icon(Icons.folder), label: 'Applications' ),
+          const NavigationDestination(icon: Icon(Icons.folder_open), selectedIcon: Icon(Icons.folder), label: 'Applications'
+          ),
           NavigationDestination(
             icon: Icon(isCandidate ? Icons.badge_outlined : Icons.settings_suggest_outlined),
             selectedIcon: Icon(isCandidate ? Icons.badge : Icons.settings_suggest),
@@ -74,6 +86,7 @@ class _RootTabsState extends State<RootTabs> {
           const NavigationDestination(icon: Icon(Icons.chat_bubble_outline), selectedIcon: Icon(Icons.chat_bubble), label: 'Messages'),
           const NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profile'),
         ],
+      ),
       ),
     );
   }
