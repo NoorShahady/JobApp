@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:first_version/screens/Shared/user.details.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:first_version/screens/UserDetailsScreen.dart';
+
+import '../Models/UserProfile.dart';
+import 'BusinessHiringScreen.dart';
 
 class RootTabs extends StatefulWidget {
   final UserProfile profile;
@@ -69,12 +71,11 @@ class _RootTabsState extends State<RootTabs> {
               fontSize: 10,  // Smaller label text
               fontWeight: FontWeight.w600,
             ),
-
           ),
         ),
       ), child:  NavigationBar(
         selectedIndex: _index,
-        onDestinationSelected: (i) => setState(() => _index = i), // i is for which page to open on the bar
+        onDestinationSelected: (i) => setState(() => _index = i),
 
         destinations: [
           const NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
@@ -88,7 +89,7 @@ class _RootTabsState extends State<RootTabs> {
           const NavigationDestination(icon: Icon(Icons.chat_bubble_outline), selectedIcon: Icon(Icons.chat_bubble), label: 'Messages'),
           const NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profile'),
         ],
-       ),
+      ),
       ),
     );
   }
@@ -177,7 +178,7 @@ class _ProfileScreen extends StatelessWidget {
                 Text('About', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
                 Text(
-                  profile.bio.isEmpty ? 'Tell others about yourself.' : profile.bio,
+                  profile.bio.isEmpty ? 'Tell othersp0 yourself.' : profile.bio,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],

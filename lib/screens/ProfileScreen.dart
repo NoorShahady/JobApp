@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:first_version/screens/Shared/user.details.dart';
+import 'package:first_version/screens/UserDetailsScreen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../Models/UserProfile.dart';
+// is not used any where i think
 class _ProfileScreen extends StatelessWidget {
   final UserProfile profile;
   const _ProfileScreen({required this.profile});
@@ -54,7 +56,7 @@ class _ProfileScreen extends StatelessWidget {
                 Text('About', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
                 Text(
-                  profile.bio.isEmpty ? 'Tell others about yourself.' : profile.bio,
+                  profile.bio.isEmpty ? 'Tell others yourself.' : profile.bio,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],

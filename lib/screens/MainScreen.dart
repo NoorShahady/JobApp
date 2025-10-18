@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:first_version/screens/Shared/user.details.dart';
+import 'package:first_version/screens/UserDetailsScreen.dart';
+
+import 'SignUpScreen.dart';
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
 
