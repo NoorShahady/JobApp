@@ -1,6 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:first_version/screens/SignInScreen.dart';
 import 'package:first_version/screens/UserDetailsScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -106,6 +107,42 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
     }
   }
 
+
+  Future<void> addUser2({
+    required String firstName,
+    required String email,
+    required String lastName,
+    required String password,
+    required String phone,
+    required String location,
+    String? bio ,
+    String? company ,
+    String? companyBio,
+
+  }) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').add({
+        'firstName': firstName,
+        'email': email,
+        'lastName':lastName,
+        'password':password,
+        'phone':phone,
+        'location':location,
+        'bio':bio,
+        'company':company,
+        'companyName':companyBio,
+
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      print('✅ User added successfully!');
+    } catch (e) {
+      print('❌ Error adding user: $e');
+    }
+  }
+
+
+
+
   Future<void> _saveThenNavigate() async {
     if (!_formKey.currentState!.validate()) {
       _showSnack('Please fix the errors', isError: true);
@@ -115,36 +152,37 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // Create Firebase Auth user
-      final userCredential =
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailCtrl.text.trim(),
-        password: _passwordCtrl.text.trim(),
-      );
+      // // Create Firebase Auth user
+      // final userCredential =
+      // await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      //   email: _emailCtrl.text.trim(),
+      //   password: _passwordCtrl.text.trim(),
+      // );
 
       // Update profile with user data
-      _profile
-        ..uid = userCredential.user!.uid
-        ..firstName = _firstNameCtrl.text.trim()
-        ..lastName = _lastNameCtrl.text.trim()
-        ..email = _emailCtrl.text.trim()
-        ..phone = _phoneCtrl.text.trim()
-        ..location = _locationCtrl.text.trim()
-        ..desiredRole = _desiredRoleCtrl.text.trim()
-        ..yearsOfExperience = int.tryParse(_yoeCtrl.text.trim()) ?? 0
-        ..bio = _bioCtrl.text.trim()
-        ..companyName = _companyNameCtrl.text.trim()
-        ..companyAbout = _companyAboutCtrl.text.trim();
+      // _profile
+      //   ..uid = userCredential.user!.uid
+      //   ..firstName = _firstNameCtrl.text.trim()
+      //   ..lastName = _lastNameCtrl.text.trim()
+      //   ..email = _emailCtrl.text.trim()
+      //   ..phone = _phoneCtrl.text.trim()
+      //   ..location = _locationCtrl.text.trim()
+      //   ..desiredRole = _desiredRoleCtrl.text.trim()
+      //   ..yearsOfExperience = int.tryParse(_yoeCtrl.text.trim()) ?? 0
+      //   ..bio = _bioCtrl.text.trim()
+      //   ..companyName = _companyNameCtrl.text.trim()
+      //   ..companyAbout = _companyAboutCtrl.text.trim();
 
-      // Save to Firestore with user's actual data
-      await addUser(
+      //Save to Firestore with user's actual data
+      await addUser2(
         firstName: _firstNameCtrl.text.trim(),
         lastName: _lastNameCtrl.text.trim(),
         email: _emailCtrl.text.trim(),
         phone: _phoneCtrl.text.trim(),
         location: _locationCtrl.text.trim(),
-        uid: userCredential.user!.uid,
-        profile: _profile,
+        password: _passwordCtrl.text.trim(),
+        bio: _bioCtrl.text.trim(),
+
       );
 
       if (!mounted) return;
@@ -158,25 +196,25 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
 
       if (_profile.accountType == 'candidate') {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => JobsFeedScreen(profile: _profile)),
+          MaterialPageRoute(builder: (_) => SignInScreen()),
         );
       } else {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-              builder: (_) => BusinessHiringScreen(profile: _profile)),
+              builder: (_) => SignInScreen()),
         );
       }
-    } on FirebaseAuthException catch (e) {
-      String message = 'Registration failed';
-      if (e.code == 'weak-password') {
-        message = 'Password is too weak';
-      } else if (e.code == 'email-already-in-use') {
-        message = 'An account already exists with this email';
-      } else if (e.code == 'invalid-email') {
-        message = 'Invalid email address';
-      }
-      _showSnack(message, isError: true);
-    } catch (e) {
+    // } on FirebaseAuthException catch (e) {
+    //   String message = 'Registration failed';
+    //   if (e.code == 'weak-password') {
+    //     message = 'Password is too weak';
+    //   } else if (e.code == 'email-already-in-use') {
+    //     message = 'An account already exists with this email';
+    //   } else if (e.code == 'invalid-email') {
+    //     message = 'Invalid email address';
+    //   }
+    //   _showSnack(message, isError: true);
+     } catch (e) {
       _showSnack('Error: ${e.toString()}', isError: true);
     } finally {
       if (mounted) setState(() => _isLoading = false);
