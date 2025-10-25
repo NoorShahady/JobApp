@@ -1,9 +1,14 @@
 import 'dart:io';
+import 'dart:js_interop';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:first_version/Utils/Utils.dart';
+import 'package:first_version/screens/JobsFiltersScreen.dart';
+import 'package:first_version/screens/MainScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:first_version/screens/UserDetailsScreen.dart';
 import 'package:first_version/screens/RootTabs.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Models/UserProfile.dart';
 import 'SignUpScreen.dart';
@@ -47,24 +52,105 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
+  Future<void> _login() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+      if (!mounted) return;
+      setState(() => _isLoading = true);
 
+      // Simulate API call
+      await Future.delayed(Duration(seconds: 2));
+      try {
+        // Query Firestore for a user with matching email and password
+        final querySnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .where('email', isEqualTo: _emailCtrl.text.trim())
+            .where('password', isEqualTo: _passwordCtrl.text.trim())
+            .get();
 
+        setState(() {
+          _isLoading = false;
+        });
+        if (querySnapshot.docs.isNotEmpty) {
+          // User found
+          final userDoc = querySnapshot.docs.first;
+          final userId = userDoc.id;
+          final userData = userDoc.data();
 
-  Future<void> _signIn() async {
-    if (!_formKey.currentState!.validate()) return;
-    setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 600));
-    if (!mounted) return;
-    setState(() => _isLoading = false);
+          // Here you would handle the actual login logic
+          print('Email: ${_emailCtrl.text}');
+          print('Password: ${_passwordCtrl.text}');
+          // Save user info locally
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('myUserID', userId);
+          await prefs.setString('myEmail', _emailCtrl.text.trim());
+          await prefs.setString('myPassword', _passwordCtrl.text.trim());
 
-    // Minimal profile to start the flow
-    final profile = UserProfile(accountType: _accountType);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('התחברת בהצלחה!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('התחברת בהצלחה!'),
+              backgroundColor: Colors.green,
+            ),
+          );
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => RootTabs(profile: profile)),
-    );
+          // Navigate to main screen
+          // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainScreen()));
+          // Navigate to main screen and clear login route
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => RootTabs(profile: )),
+                (route) => false,
+          );
+
+          print('Welcome ${userData['name'] ?? 'User'}');
+        } else {
+          // No user found with matching email and password
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Invalid email or password!'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+        print('Error logging in: $e');
+      } finally {
+        if (mounted) setState(() => _isLoading = false);
+      }
+    }
   }
+
+
+
+
+  // Future<void> _signIn() async {
+  //   if (!_formKey.currentState!.validate()) return;
+  //   setState(() => _isLoading = true);
+  //   await Future.delayed(const Duration(milliseconds: 600));
+  //   if (!mounted) return;
+  //   setState(() => _isLoading = false);
+  //
+  //   // Minimal profile to start the flow
+  //   final profile = UserProfile(accountType: _accountType);
+  //
+  //   Navigator.pushReplacement(
+  //     context,
+  //     MaterialPageRoute(builder: (_) => RootTabs(profile: profile)),
+  //   );
+  // }
 
   void _goToSignUp() {
     Navigator.push(
@@ -161,7 +247,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: FilledButton(
-                              onPressed: _isLoading ? null : _signIn,
+                              onPressed: _isLoading ? null : _login,
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 12),
                                 child: _isLoading
