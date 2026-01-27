@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:js_interop';
+
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:first_version/Utils/Utils.dart';
@@ -105,8 +105,13 @@ class _SignInScreenState extends State<SignInScreen> {
           // Navigate to main screen
           // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainScreen()));
           // Navigate to main screen and clear login route
+
+          var bb = new UserProfile();
+          bb.accountType == 'candidate';
+
+
           Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => RootTabs(profile: )),
+            MaterialPageRoute(builder: (context) => RootTabs(profile: bb,)),
                 (route) => false,
           );
 
@@ -148,7 +153,7 @@ class _SignInScreenState extends State<SignInScreen> {
   //
   //   Navigator.pushReplacement(
   //     context,
-  //     MaterialPageRoute(builder: (_) => RootTabs(profile: profile)),
+  //     MaterialPageRoute(builder: (_) => RootTabs(profile: profile)), 
   //   );
   // }
 
