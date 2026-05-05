@@ -301,14 +301,14 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
       height: 60,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+          colors: [Color(0xFF1E88E5), Color(0xFF42A5F5)], // Blue gradient
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF667EEA).withOpacity(0.4),
+            color: const Color(0xFF1E88E5).withOpacity(0.4),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -380,12 +380,12 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+                    colors: [Color(0xFF1E88E5), Color(0xFF42A5F5)], // Blue gradient
                   ),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF667EEA).withOpacity(0.3),
+                      color: const Color(0xFF1E88E5).withOpacity(0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -442,7 +442,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
         decoration: BoxDecoration(
           gradient: isSelected
               ? const LinearGradient(
-            colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+            colors: [Color(0xFF1E88E5), Color(0xFF42A5F5)], // Blue gradient
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           )
@@ -459,7 +459,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
           boxShadow: isSelected
               ? [
             BoxShadow(
-              color: const Color(0xFF667EEA).withOpacity(0.3),
+              color: const Color(0xFF1E88E5).withOpacity(0.3),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),
@@ -499,7 +499,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.white, Colors.purple[50]!.withOpacity(0.3)],
+          colors: [Colors.white, Colors.blue[50]!.withOpacity(0.3)], // Blue tint
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -523,12 +523,12 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.purple[400]!, Colors.pink[400]!],
+                    colors: [Colors.blue[400]!, Colors.lightBlue[400]!], // Blue gradient
                   ),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.purple.withOpacity(0.3),
+                      color: Colors.blue.withOpacity(0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -579,7 +579,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
               labelStyle: TextStyle(
                   color: Colors.grey[600], fontWeight: FontWeight.w500),
               prefixIcon: const Icon(Icons.lock_outline,
-                  color: Color(0xFF667EEA), size: 22),
+                  color: Color(0xFF1E88E5), size: 22), // Blue icon
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscurePassword
@@ -603,7 +603,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide:
-                const BorderSide(color: Color(0xFF667EEA), width: 2.5),
+                const BorderSide(color: Color(0xFF1E88E5), width: 2.5), // Blue border
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
@@ -644,7 +644,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
         hintText: hint,
         labelStyle:
         TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),
-        prefixIcon: Icon(icon, color: const Color(0xFF667EEA), size: 22),
+        prefixIcon: Icon(icon, color: const Color(0xFF1E88E5), size: 22), // Blue icon
         filled: true,
         fillColor: Colors.white.withOpacity(0.9),
         border: OutlineInputBorder(
@@ -657,7 +657,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFF667EEA), width: 2.5),
+          borderSide: const BorderSide(color: Color(0xFF1E88E5), width: 2.5), // Blue border
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
@@ -677,7 +677,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.white, Colors.green[50]!.withOpacity(0.3)],
+          colors: [Colors.white, Colors.blue[50]!.withOpacity(0.3)], // Blue tint
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -701,12 +701,12 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.green[400]!, Colors.teal[400]!],
+                    colors: [Colors.blue[400]!, Colors.lightBlue[400]!], // Blue gradient
                   ),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.green.withOpacity(0.3),
+                      color: Colors.blue.withOpacity(0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -780,7 +780,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
         labelText: label,
         labelStyle:
         TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),
-        prefixIcon: Icon(icon, color: const Color(0xFF667EEA), size: 22),
+        prefixIcon: Icon(icon, color: const Color(0xFF1E88E5), size: 22), // Blue icon
         filled: true,
         fillColor: Colors.white.withOpacity(0.9),
         border: OutlineInputBorder(
@@ -793,7 +793,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFF667EEA), width: 2.5),
+          borderSide: const BorderSide(color: Color(0xFF1E88E5), width: 2.5), // Blue border
         ),
         contentPadding:
         const EdgeInsets.symmetric(horizontal: 20, vertical: 18),

@@ -168,10 +168,12 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     checkConnection(context);
 
+    // Explicitly using the Blue color to match SignUpScreen
+    const primaryColor = Color(0xFF1E88E5);
 
-    final c = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.white, title: const Text('')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(backgroundColor: Colors.white, elevation: 0, title: const Text('')),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 520),
@@ -184,8 +186,8 @@ class _SignInScreenState extends State<SignInScreen> {
                   children: [
                     CircleAvatar(
                       radius: 28,
-                      backgroundColor: c.primary.withOpacity(.12),
-                      child: Icon(Icons.work, color: c.primary, size: 28),
+                      backgroundColor: primaryColor.withOpacity(.12),
+                      child: const Icon(Icons.work, color: primaryColor, size: 28),
                     ),
                     const SizedBox(width: 12),
                     Column(
@@ -216,11 +218,33 @@ class _SignInScreenState extends State<SignInScreen> {
                   ],
                   selected: {_accountType},
                   onSelectionChanged: (s) => setState(() => _accountType = s.first),
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+                          (Set<WidgetState> states) {
+                        if (states.contains(WidgetState.selected)) {
+                          return primaryColor.withOpacity(0.2); // Light blue background when selected
+                        }
+                        return null; // Use the component's default.
+                      },
+                    ),
+                    foregroundColor: WidgetStateProperty.resolveWith<Color?>(
+                          (Set<WidgetState> states) {
+                        if (states.contains(WidgetState.selected)) {
+                          return primaryColor; // Blue text/icon when selected
+                        }
+                        return Colors.black87;
+                      },
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Card(
                   elevation: 1,
                   color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Colors.grey.shade200),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Form(
@@ -232,6 +256,10 @@ class _SignInScreenState extends State<SignInScreen> {
                             decoration: const InputDecoration(
                               labelText: 'Email',
                               hintText: 'you@example.com',
+                              border: OutlineInputBorder(),
+                              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+                              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 2)),
+                              prefixIcon: Icon(Icons.email_outlined, color: primaryColor),
                             ),
                             keyboardType: TextInputType.emailAddress,
                             validator: (v) =>
@@ -242,7 +270,13 @@ class _SignInScreenState extends State<SignInScreen> {
                           const SizedBox(height: 12),
                           TextFormField(
                             controller: _passwordCtrl,
-                            decoration: const InputDecoration(labelText: 'Password'),
+                            decoration: const InputDecoration(
+                              labelText: 'Password',
+                              border: OutlineInputBorder(),
+                              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+                              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 2)),
+                              prefixIcon: Icon(Icons.lock_outline, color: primaryColor),
+                            ),
                             obscureText: true,
                             validator: (v) => (v == null || v.length < 6)
                                 ? 'Min 6 characters'
@@ -253,16 +287,18 @@ class _SignInScreenState extends State<SignInScreen> {
                             width: double.infinity,
                             child: FilledButton(
                               onPressed: _isLoading ? null : _login,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
-                                child: _isLoading
-                                    ? const SizedBox(
-                                        width: 18,
-                                        height: 18,
-                                        child: CircularProgressIndicator(strokeWidth: 2),
-                                      )
-                                    : const Text('Sign In'),
+                              style: FilledButton.styleFrom(
+                                backgroundColor: primaryColor,
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               ),
+                              child: _isLoading
+                                  ? const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                    )
+                                  : const Text('Sign In', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                             ),
                           ),
                         ],
@@ -273,6 +309,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(height: 12),
                 TextButton(
                   onPressed: _goToSignUp,
+                  style: TextButton.styleFrom(foregroundColor: primaryColor),
                   child: const Text('New here? Create an account'),
                 ),
               ],
