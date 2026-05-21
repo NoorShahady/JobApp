@@ -1,14 +1,11 @@
 import 'dart:io';
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_version/Utils/Utils.dart';
-import 'package:first_version/screens/JobsFiltersScreen.dart';
-import 'package:first_version/screens/MainScreen.dart';
-import 'package:flutter/material.dart';
-import 'package:first_version/screens/UserDetailsScreen.dart';
 import 'package:first_version/screens/RootTabs.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:first_version/theme/app_theme.dart';
+import 'package:flutter/material.dart';
 
 import '../Models/UserProfile.dart';
 import 'SignUpScreen.dart';
@@ -25,7 +22,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   bool _isLoading = false;
-  String _accountType = 'candidate'; // 'candidate' or 'business'
+  String _accountType = 'candidate';
 
   @override
   void dispose() {
@@ -53,90 +50,76 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> _login() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      // 1. Sign in with Firebase Auth
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailCtrl.text.trim(),
+        password: _passwordCtrl.text.trim(),
+      );
+
+      // 2. Load the user's profile from Firestore using their UID
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(credential.user!.uid)
+          .get();
+
       if (!mounted) return;
-      setState(() => _isLoading = true);
 
-      // Simulate API call
-      await Future.delayed(Duration(seconds: 2));
-      try {
-        // Query Firestore for a user with matching email and password
-        final querySnapshot = await FirebaseFirestore.instance
-            .collection('users')
-            .where('email', isEqualTo: _emailCtrl.text.trim())
-            .where('password', isEqualTo: _passwordCtrl.text.trim())
-            .get();
-
-        setState(() {
-          _isLoading = false;
-        });
-        if (querySnapshot.docs.isNotEmpty) {
-          // User found
-          final userDoc = querySnapshot.docs.first;
-          final userId = userDoc.id;
-          final userData = userDoc.data();
-
-          // Here you would handle the actual login logic
-          print('Email: ${_emailCtrl.text}');
-          print('Password: ${_passwordCtrl.text}');
-          // Save user info locally
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString('myUserID', userId);
-          await prefs.setString('myEmail', _emailCtrl.text.trim());
-          await prefs.setString('myPassword', _passwordCtrl.text.trim());
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('התחברת בהצלחה!'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          if (!mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('התחברת בהצלחה!'),
-              backgroundColor: Colors.green,
-            ),
-          );
-
-          // Navigate to main screen
-          // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainScreen()));
-          // Navigate to main screen and clear login route
-
-          var bb = new UserProfile();
-          bb.accountType == 'candidate';
-
-
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => RootTabs(profile: bb,)),
-                (route) => false,
-          );
-
-          print('Welcome ${userData['name'] ?? 'User'}');
-        } else {
-          // No user found with matching email and password
-          if (!mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Invalid email or password!'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      } catch (e) {
-        if (!mounted) return;
+      if (!doc.exists) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+          const SnackBar(
+            content: Text('Account data not found. Please sign up again.'),
+            backgroundColor: Colors.red,
+          ),
         );
-        print('Error logging in: $e');
-      } finally {
-        if (mounted) setState(() => _isLoading = false);
+        return;
       }
+
+      final profile = UserProfile.fromJson(doc.data()!);
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Signed in successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // 3. Navigate based on the real accountType from Firestore
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => RootTabs(profile: profile)),
+        (route) => false,
+      );
+    } on FirebaseAuthException catch (e) {
+      String message = 'Sign in failed';
+      if (e.code == 'user-not-found') {
+        message = 'No account found with this email';
+      } else if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
+        message = 'Incorrect email or password';
+      } else if (e.code == 'invalid-email') {
+        message = 'Invalid email address';
+      } else if (e.code == 'user-disabled') {
+        message = 'This account has been disabled';
+      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message), backgroundColor: Colors.red),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
+
 
 
 
@@ -168,9 +151,6 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     checkConnection(context);
 
-    // Explicitly using the Blue color to match SignUpScreen
-    const primaryColor = Color(0xFF1E88E5);
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(backgroundColor: Colors.white, elevation: 0, title: const Text('')),
@@ -186,8 +166,8 @@ class _SignInScreenState extends State<SignInScreen> {
                   children: [
                     CircleAvatar(
                       radius: 28,
-                      backgroundColor: primaryColor.withOpacity(.12),
-                      child: const Icon(Icons.work, color: primaryColor, size: 28),
+                      backgroundColor: AppColors.primary.withValues(alpha: 0.12),
+                      child: const Icon(Icons.work, color: AppColors.primary, size: 28),
                     ),
                     const SizedBox(width: 12),
                     Column(
@@ -201,7 +181,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               ?.copyWith(fontWeight: FontWeight.w700),
                         ),
                         Text(
-                          'Blue & white theme • Sign in to continue',
+                          'Sign in to continue',
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54),
                         ),
                       ],
@@ -213,7 +193,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(height: 8),
                 SegmentedButton<String>(
                   segments: const [
-                    ButtonSegment(value: 'candidate', label: Text('Job Seeker'), icon: Icon(Icons.person)),
+                    ButtonSegment(value: 'candidate', label: Text('Worker'), icon: Icon(Icons.person)),
                     ButtonSegment(value: 'business', label: Text('Hiring Manager'), icon: Icon(Icons.business)),
                   ],
                   selected: {_accountType},
@@ -222,15 +202,15 @@ class _SignInScreenState extends State<SignInScreen> {
                     backgroundColor: WidgetStateProperty.resolveWith<Color?>(
                           (Set<WidgetState> states) {
                         if (states.contains(WidgetState.selected)) {
-                          return primaryColor.withOpacity(0.2); // Light blue background when selected
+                          return AppColors.primary.withValues(alpha: 0.2);
                         }
-                        return null; // Use the component's default.
+                        return null;
                       },
                     ),
                     foregroundColor: WidgetStateProperty.resolveWith<Color?>(
                           (Set<WidgetState> states) {
                         if (states.contains(WidgetState.selected)) {
-                          return primaryColor; // Blue text/icon when selected
+                          return AppColors.primary;
                         }
                         return Colors.black87;
                       },
@@ -258,8 +238,8 @@ class _SignInScreenState extends State<SignInScreen> {
                               hintText: 'you@example.com',
                               border: OutlineInputBorder(),
                               enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
-                              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 2)),
-                              prefixIcon: Icon(Icons.email_outlined, color: primaryColor),
+                              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.primary, width: 2)),
+                              prefixIcon: Icon(Icons.email_outlined, color: AppColors.primary),
                             ),
                             keyboardType: TextInputType.emailAddress,
                             validator: (v) =>
@@ -274,8 +254,8 @@ class _SignInScreenState extends State<SignInScreen> {
                               labelText: 'Password',
                               border: OutlineInputBorder(),
                               enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
-                              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 2)),
-                              prefixIcon: Icon(Icons.lock_outline, color: primaryColor),
+                              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.primary, width: 2)),
+                              prefixIcon: Icon(Icons.lock_outline, color: AppColors.primary),
                             ),
                             obscureText: true,
                             validator: (v) => (v == null || v.length < 6)
@@ -288,7 +268,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             child: FilledButton(
                               onPressed: _isLoading ? null : _login,
                               style: FilledButton.styleFrom(
-                                backgroundColor: primaryColor,
+                                backgroundColor: AppColors.primary,
                                 padding: const EdgeInsets.symmetric(vertical: 14),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               ),
@@ -309,7 +289,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(height: 12),
                 TextButton(
                   onPressed: _goToSignUp,
-                  style: TextButton.styleFrom(foregroundColor: primaryColor),
+                  style: TextButton.styleFrom(foregroundColor: AppColors.primary),
                   child: const Text('New here? Create an account'),
                 ),
               ],

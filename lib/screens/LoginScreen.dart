@@ -1,8 +1,7 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_version/screens/UserDetailsScreen.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:first_version/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 import '../Models/UserProfile.dart';
@@ -99,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
+      backgroundColor: AppColors.surface,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -113,12 +112,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+                        colors: [AppColors.primary, AppColors.darker],
                       ),
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF667EEA).withOpacity(0.4),
+                          color: AppColors.primary.withValues(alpha: 0.4),
                           blurRadius: 20,
                           offset: const Offset(0, 10),
                         ),
@@ -180,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: Colors.grey[600],
                                 fontWeight: FontWeight.w500),
                             prefixIcon: const Icon(Icons.email_outlined,
-                                color: Color(0xFF667EEA), size: 22),
+                                color: AppColors.primary, size: 22),
                             filled: true,
                             fillColor: Colors.grey[50],
                             border: OutlineInputBorder(
@@ -195,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(16),
                               borderSide: const BorderSide(
-                                  color: Color(0xFF667EEA), width: 2.5),
+                                  color: AppColors.primary, width: 2.5),
                             ),
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(16),
@@ -223,7 +222,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: Colors.grey[600],
                                 fontWeight: FontWeight.w500),
                             prefixIcon: const Icon(Icons.lock_outline,
-                                color: Color(0xFF667EEA), size: 22),
+                                color: AppColors.primary, size: 22),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _obscurePassword
@@ -248,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(16),
                               borderSide: const BorderSide(
-                                  color: Color(0xFF667EEA), width: 2.5),
+                                  color: AppColors.primary, width: 2.5),
                             ),
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(16),
@@ -264,14 +263,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 60,
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+                              colors: [AppColors.primary, AppColors.darker],
                               begin: Alignment.centerLeft,
                               end: Alignment.centerRight,
                             ),
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF667EEA).withOpacity(0.4),
+                                color: AppColors.primary.withValues(alpha: 0.4),
                                 blurRadius: 20,
                                 offset: const Offset(0, 10),
                               ),
@@ -327,7 +326,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: const Text(
                           'Sign Up',
                           style: TextStyle(
-                            color: Color(0xFF667EEA),
+                            color: AppColors.primary,
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
                           ),

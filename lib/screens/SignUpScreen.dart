@@ -1,12 +1,10 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_version/screens/SignInScreen.dart';
-import 'package:first_version/screens/UserDetailsScreen.dart';
+import 'package:first_version/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 import '../Models/UserProfile.dart';
-import 'BusinessHiringScreen.dart';
 // This is the create a Profile screen
 
 class UserProfileFormScreen extends StatefulWidget {
@@ -152,68 +150,50 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // // Create Firebase Auth user
-      // final userCredential =
-      // await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      //   email: _emailCtrl.text.trim(),
-      //   password: _passwordCtrl.text.trim(),
-      // );
-
-      // Update profile with user data
-      // _profile
-      //   ..uid = userCredential.user!.uid
-      //   ..firstName = _firstNameCtrl.text.trim()
-      //   ..lastName = _lastNameCtrl.text.trim()
-      //   ..email = _emailCtrl.text.trim()
-      //   ..phone = _phoneCtrl.text.trim()
-      //   ..location = _locationCtrl.text.trim()
-      //   ..desiredRole = _desiredRoleCtrl.text.trim()
-      //   ..yearsOfExperience = int.tryParse(_yoeCtrl.text.trim()) ?? 0
-      //   ..bio = _bioCtrl.text.trim()
-      //   ..companyName = _companyNameCtrl.text.trim()
-      //   ..companyAbout = _companyAboutCtrl.text.trim();
-
-      //Save to Firestore with user's actual data
-      await addUser2(
-        firstName: _firstNameCtrl.text.trim(),
-        lastName: _lastNameCtrl.text.trim(),
+      // 1. Create Firebase Auth user
+      final userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailCtrl.text.trim(),
-        phone: _phoneCtrl.text.trim(),
-        location: _locationCtrl.text.trim(),
         password: _passwordCtrl.text.trim(),
-        bio: _bioCtrl.text.trim(),
-
       );
+      final uid = userCredential.user!.uid;
+      // 2. Save all fields INCLUDING accountType to Firestore under the UID
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'uid': uid,
+        'accountType': _profile.accountType, // 'candidate' or 'business'
+        'firstName': _firstNameCtrl.text.trim(),
+        'lastName': _lastNameCtrl.text.trim(),
+        'email': _emailCtrl.text.trim(),
+        'phone': _phoneCtrl.text.trim(),
+        'location': _locationCtrl.text.trim(),
+        'bio': _bioCtrl.text.trim(),
+        'desiredRole': _desiredRoleCtrl.text.trim(),
+        'workType': _profile.workType,
+        'yearsOfExperience': int.tryParse(_yoeCtrl.text.trim()) ?? 0,
+        'skills': _profile.skills,
+        'companyName': _companyNameCtrl.text.trim(),
+        'companyAbout': _companyAboutCtrl.text.trim(),
+        'createdAt': FieldValue.serverTimestamp(),
+      });
 
       if (!mounted) return;
 
-      _showSnack('Account created successfully!');
-
-      // Navigate to appropriate screen
+      _showSnack('Account created! Please sign in.');
       await Future.delayed(const Duration(milliseconds: 500));
-
       if (!mounted) return;
-
-      if (_profile.accountType == 'candidate') {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => SignInScreen()),
-        );
-      } else {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-              builder: (_) => SignInScreen()),
-        );
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => SignInScreen()),
+      );
+    } on FirebaseAuthException catch (e) {
+      String message = 'Registration failed';
+      if (e.code == 'weak-password') {
+        message = 'Password is too weak (min 6 characters)';
+      } else if (e.code == 'email-already-in-use') {
+        message = 'An account already exists with this email';
+      } else if (e.code == 'invalid-email') {
+        message = 'Invalid email address';
       }
-    // } on FirebaseAuthException catch (e) {
-    //   String message = 'Registration failed';
-    //   if (e.code == 'weak-password') {
-    //     message = 'Password is too weak';
-    //   } else if (e.code == 'email-already-in-use') {
-    //     message = 'An account already exists with this email';
-    //   } else if (e.code == 'invalid-email') {
-    //     message = 'Invalid email address';
-    //   }
-    //   _showSnack(message, isError: true);
+      _showSnack(message, isError: true);
      } catch (e) {
       _showSnack('Error: ${e.toString()}', isError: true);
     } finally {
@@ -235,7 +215,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
+      backgroundColor: AppColors.surface,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         elevation: 0,
@@ -868,7 +848,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
                     hintText: 'Add a skill',
                     hintStyle: TextStyle(color: Colors.grey[400]),
                     prefixIcon: const Icon(Icons.lightbulb_outline,
-                        color: Color(0xFF667EEA), size: 22),
+                        color: AppColors.primary, size: 22),
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.9),
                     border: OutlineInputBorder(
@@ -883,7 +863,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
                       borderSide: const BorderSide(
-                          color: Color(0xFF667EEA), width: 2.5),
+                          color: AppColors.primary, width: 2.5),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 18),
@@ -896,12 +876,12 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
                 width: 56,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+                    colors: [AppColors.primary, AppColors.darker],
                   ),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF667EEA).withOpacity(0.3),
+                      color: AppColors.primary.withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -952,14 +932,14 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+          colors: [AppColors.primary, AppColors.darker],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF667EEA).withOpacity(0.25),
+            color: AppColors.primary.withValues(alpha: 0.25),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),

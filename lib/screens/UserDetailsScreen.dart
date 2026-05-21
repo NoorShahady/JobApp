@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../Models/UserProfile.dart';
 import '../Models/job.dart';
+import '../Models/jobs_store.dart';
+import '../theme/app_theme.dart';
+import 'ChatScreen.dart';
 import 'JobsFiltersScreen.dart';
 import 'LoginScreen.dart';
 
@@ -23,22 +26,20 @@ class _JobsFeedScreenState extends State<JobsFeedScreen> {
   String _query = '';
   String _workType = 'Any';
 
-  // List<Job> _filtered() {
-  //   return _mockJobs.where((j) {
-  //     final qOk = _query.isEmpty ||
-  //         j.title.toLowerCase().contains(_query.toLowerCase()) ||
-  //         j.company.toLowerCase().contains(_query.toLowerCase());
-  //     final wtOk = _workType == 'Any' || j.workType == _workType;
-  //     return qOk && wtOk;
-  //   }).toList();
-  // }
+  List<Job> _filtered(List<Job> all) {
+    return all.where((j) {
+      final qOk = _query.isEmpty ||
+          j.title.toLowerCase().contains(_query.toLowerCase()) ||
+          j.company.toLowerCase().contains(_query.toLowerCase());
+      final wtOk = _workType == 'Any' || j.workType == _workType;
+      return qOk && wtOk;
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // final jobs = _filtered();
-    final jobs = [];
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
+      backgroundColor: AppColors.surface,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -73,14 +74,34 @@ class _JobsFeedScreenState extends State<JobsFeedScreen> {
             onWorkType: (v) => setState(() => _workType = v),
           ),
           Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.all(20),
-              itemBuilder: (_, i) {
-                final j = jobs[i];
-                return _buildJobCard(j);
+            child: ListenableBuilder(
+              listenable: JobsStore.instance,
+              builder: (context, _) {
+                final jobs = _filtered(JobsStore.instance.jobs);
+                if (jobs.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.search_off_rounded,
+                            size: 64, color: Colors.grey[300]),
+                        const SizedBox(height: 12),
+                        Text('No jobs found',
+                            style: TextStyle(
+                                color: Colors.grey[400],
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500)),
+                      ],
+                    ),
+                  );
+                }
+                return ListView.separated(
+                  padding: const EdgeInsets.all(20),
+                  itemBuilder: (_, i) => _buildJobCard(jobs[i]),
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  itemCount: jobs.length,
+                );
               },
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemCount: jobs.length,
             ),
           ),
         ],
@@ -119,15 +140,11 @@ class _JobsFeedScreenState extends State<JobsFeedScreen> {
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(18),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF667EEA).withOpacity(0.3),
+                      gradient: AppColors.lighterGradient,
+                            borderRadius: BorderRadius.circular(18),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primary.withValues(alpha: 0.3),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -293,61 +310,137 @@ class _JobsFeedScreenState extends State<JobsFeedScreen> {
                   style: TextStyle(
                       fontSize: 16, color: Colors.grey[700], height: 1.5),
                 ),
-                const SizedBox(height: 32),
-                Container(
-                  height: 56,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.green[600]!, Colors.green[800]!],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.green.withOpacity(0.3),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
-                      onTap: () {
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                                'Applied to ${j.title} at ${j.company}'),
-                            backgroundColor: Colors.green[700],
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                          ),
-                        );
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.send_rounded, color: Colors.white),
-                          SizedBox(width: 12),
-                          Text(
-                            'Apply Now',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                const SizedBox(height: 24),
+                _buildJobActions(j),
               ],
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildJobActions(Job j) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return const SizedBox.shrink();
+
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('applications')
+          .where('jobId', isEqualTo: j.id)
+          .where('applicantId', isEqualTo: user.uid)
+          .limit(1)
+          .snapshots(),
+      builder: (context, snap) {
+        final hasApplied = snap.data?.docs.isNotEmpty ?? false;
+
+        return Column(
+          children: [
+            Container(
+              height: 56,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: hasApplied
+                      ? [Colors.grey[400]!, Colors.grey[500]!]
+                      : [Colors.green[600]!, Colors.green[800]!],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: (hasApplied ? Colors.grey : Colors.green).withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: hasApplied
+                      ? null
+                      : () => _applyForJob(j, user),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        hasApplied ? Icons.check_circle : Icons.send_rounded,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        hasApplied ? 'Applied' : 'Apply Now',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            if (j.employerId.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 48,
+                child: OutlinedButton.icon(
+                  onPressed: () => _openChatWithEmployer(j, user),
+                  icon: const Icon(Icons.chat_outlined),
+                  label: const Text('Message Employer',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.blue[700],
+                    side: BorderSide(color: Colors.blue[300]!),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _applyForJob(Job j, User user) async {
+    final profile = widget.profile;
+    await FirebaseFirestore.instance.collection('applications').add({
+      'jobId': j.id,
+      'jobTitle': j.title,
+      'companyName': j.company,
+      'applicantId': user.uid,
+      'applicantName': '${profile.firstName} ${profile.lastName}'.trim(),
+      'applicantEmail': profile.email,
+      'employerId': j.employerId,
+      'appliedAt': DateTime.now().toIso8601String(),
+      'status': 'Pending',
+    });
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Applied to ${j.title} at ${j.company}'),
+          backgroundColor: Colors.green[700],
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }
+  }
+
+  void _openChatWithEmployer(Job j, User user) {
+    final profile = widget.profile;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ChatScreen(
+          otherUserId: j.employerId,
+          otherUserName: j.employerName.isEmpty ? j.company : j.employerName,
+          currentUserId: user.uid,
+          currentUserName: '${profile.firstName} ${profile.lastName}'.trim(),
+        ),
       ),
     );
   }

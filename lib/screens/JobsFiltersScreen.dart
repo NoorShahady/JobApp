@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:first_version/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class JobsFiltersScreen extends StatefulWidget {
@@ -62,7 +62,7 @@ class _JobsFiltersState extends State<JobsFiltersScreen> {
               hintText: 'Search jobs or companies',
               hintStyle: TextStyle(color: Colors.grey[400]),
               prefixIcon: const Icon(Icons.search_rounded,
-                  color: Color(0xFF667EEA), size: 24),
+                  color: AppColors.primary, size: 24),
               filled: true,
               fillColor: Colors.white.withOpacity(0.9),
               border: OutlineInputBorder(
@@ -76,7 +76,7 @@ class _JobsFiltersState extends State<JobsFiltersScreen> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide:
-                const BorderSide(color: Color(0xFF667EEA), width: 2.5),
+                const BorderSide(color: AppColors.primary, width: 2.5),
               ),
               contentPadding:
               const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
@@ -104,7 +104,7 @@ class _JobsFiltersState extends State<JobsFiltersScreen> {
               labelStyle: TextStyle(
                   color: Colors.grey[600], fontWeight: FontWeight.w500),
               prefixIcon: const Icon(Icons.filter_list_rounded,
-                  color: Color(0xFF667EEA), size: 24),
+                  color: AppColors.primary, size: 24),
               filled: true,
               fillColor: Colors.white.withOpacity(0.9),
               border: OutlineInputBorder(
@@ -118,7 +118,7 @@ class _JobsFiltersState extends State<JobsFiltersScreen> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide:
-                const BorderSide(color: Color(0xFF667EEA), width: 2.5),
+                const BorderSide(color: AppColors.primary, width: 2.5),
               ),
               contentPadding:
               const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
