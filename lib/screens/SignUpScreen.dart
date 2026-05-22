@@ -277,55 +277,46 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
   }
 
   Widget _buildSaveButton() {
-    return Container(
-      height: 60,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF1E88E5), Color(0xFF42A5F5)], // Blue gradient
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: _isLoading
+              ? LinearGradient(colors: [Colors.grey[400]!, Colors.grey[400]!])
+              : AppColors.lighterGradient,
+          borderRadius: BorderRadius.circular(14),
         ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF1E88E5).withOpacity(0.4),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: _isLoading ? null : _saveThenNavigate,
-          borderRadius: BorderRadius.circular(20),
-          child: _isLoading
-              ? const Center(
-            child: SizedBox(
-              height: 24,
-              width: 24,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 3,
-              ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: _isLoading ? null : _saveThenNavigate,
+            borderRadius: BorderRadius.circular(14),
+            child: Center(
+              child: _isLoading
+                  ? const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+                    )
+                  : const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          'Create Account',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
             ),
-          )
-              : const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Create Account',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.5,
-                ),
-              ),
-              SizedBox(width: 12),
-              Icon(Icons.arrow_forward_rounded,
-                  color: Colors.white, size: 26),
-            ],
           ),
         ),
       ),
@@ -335,44 +326,29 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
   Widget _accountTypeCard() {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.white, Colors.blue[50]!.withOpacity(0.3)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white, width: 2),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 30,
-            offset: const Offset(0, 8),
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(28),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF1E88E5), Color(0xFF42A5F5)], // Blue gradient
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF1E88E5).withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.person_outline,
-                    color: Colors.white, size: 26),
+                child: const Icon(Icons.person_outline, color: AppColors.primary, size: 20),
               ),
               const SizedBox(width: 16),
               const Text(
@@ -432,21 +408,21 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected
-                ? Colors.white.withOpacity(0.5)
+                ? Colors.white.withValues(alpha: 0.5)
                 : Colors.grey[300]!,
             width: isSelected ? 2 : 1.5,
           ),
           boxShadow: isSelected
               ? [
             BoxShadow(
-              color: const Color(0xFF1E88E5).withOpacity(0.3),
+              color: const Color(0xFF1E88E5).withValues(alpha: 0.3),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),
           ]
               : [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -478,44 +454,29 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
   Widget _basicInfoCard() {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.white, Colors.blue[50]!.withOpacity(0.3)], // Blue tint
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white, width: 2),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 30,
-            offset: const Offset(0, 8),
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(28),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.blue[400]!, Colors.lightBlue[400]!], // Blue gradient
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blue.withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.badge_outlined,
-                    color: Colors.white, size: 26),
+                child: const Icon(Icons.badge_outlined, color: AppColors.primary, size: 20),
               ),
               const SizedBox(width: 16),
               const Text(
@@ -571,7 +532,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
                     setState(() => _obscurePassword = !_obscurePassword),
               ),
               filled: true,
-              fillColor: Colors.white.withOpacity(0.9),
+              fillColor: Colors.white.withValues(alpha: 0.9),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide.none,
@@ -626,7 +587,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
         TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),
         prefixIcon: Icon(icon, color: const Color(0xFF1E88E5), size: 22), // Blue icon
         filled: true,
-        fillColor: Colors.white.withOpacity(0.9),
+        fillColor: Colors.white.withValues(alpha: 0.9),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,
@@ -656,44 +617,29 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
   Widget _candidateInfoCard() {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.white, Colors.blue[50]!.withOpacity(0.3)], // Blue tint
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white, width: 2),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 30,
-            offset: const Offset(0, 8),
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(28),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.blue[400]!, Colors.lightBlue[400]!], // Blue gradient
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blue.withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.work_outline_rounded,
-                    color: Colors.white, size: 26),
+                child: const Icon(Icons.work_outline_rounded, color: AppColors.primary, size: 20),
               ),
               const SizedBox(width: 16),
               const Text(
@@ -762,7 +708,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
         TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),
         prefixIcon: Icon(icon, color: const Color(0xFF1E88E5), size: 22), // Blue icon
         filled: true,
-        fillColor: Colors.white.withOpacity(0.9),
+        fillColor: Colors.white.withValues(alpha: 0.9),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,
@@ -784,44 +730,29 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
   Widget _skillsCard() {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.white, Colors.orange[50]!.withOpacity(0.3)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white, width: 2),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 30,
-            offset: const Offset(0, 8),
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(28),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.orange[400]!, Colors.deepOrange[400]!],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.orange.withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.stars_rounded,
-                    color: Colors.white, size: 26),
+                child: const Icon(Icons.stars_rounded, color: AppColors.primary, size: 20),
               ),
               const SizedBox(width: 16),
               const Text(
@@ -850,7 +781,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
                     prefixIcon: const Icon(Icons.lightbulb_outline,
                         color: AppColors.primary, size: 22),
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.9),
+                    fillColor: Colors.white.withValues(alpha: 0.9),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
                       borderSide: BorderSide.none,
@@ -963,7 +894,7 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
             child: Container(
               padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.3),
+                color: Colors.white.withValues(alpha: 0.3),
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.close_rounded,
@@ -978,44 +909,29 @@ class _UserProfileFormScreenState extends State<UserProfileFormScreen> {
   Widget _businessInfoCard() {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.white, Colors.indigo[50]!.withOpacity(0.3)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white, width: 2),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 30,
-            offset: const Offset(0, 8),
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(28),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.indigo[400]!, Colors.blue[400]!],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.indigo.withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.business_rounded,
-                    color: Colors.white, size: 26),
+                child: const Icon(Icons.business_rounded, color: AppColors.primary, size: 20),
               ),
               const SizedBox(width: 16),
               const Text(

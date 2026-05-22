@@ -186,69 +186,53 @@ class _BusinessHiringScreenState extends State<BusinessHiringScreen> {
     return Form(
       key: _formKey,
       child: Container(
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.white, Colors.blue[50]!.withOpacity(0.4)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white, width: 2),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 30,
-              offset: const Offset(0, 8),
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
-        padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF1E88E5), Color(0xFF42A5F5)], // Blue gradient
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF1E88E5).withOpacity(0.3),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(Icons.post_add_rounded,
-                      color: Colors.white, size: 26),
+                      color: AppColors.primary, size: 20),
                 ),
-                const SizedBox(width: 14),
-                const Column(
+                const SizedBox(width: 10),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Post a Job',
                       style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
                         color: Colors.black87,
-                        letterSpacing: -0.5,
                       ),
                     ),
                     Text(
                       'Visible to all job seekers',
-                      style: TextStyle(fontSize: 13, color: Colors.grey),
+                      style: TextStyle(fontSize: 13, color: Colors.grey[500]),
                     ),
                   ],
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
 
             // Job Title
             _buildField(
@@ -333,13 +317,11 @@ class _BusinessHiringScreenState extends State<BusinessHiringScreen> {
                     height: 54,
                     width: 54,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF1E88E5), Color(0xFF42A5F5)], // Blue gradient
-                      ),
+                      gradient: AppColors.lighterGradient,
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: const Icon(Icons.add_rounded,
-                        color: Colors.white, size: 26),
+                        color: Colors.white, size: 24),
                   ),
                 ),
               ],
@@ -352,15 +334,28 @@ class _BusinessHiringScreenState extends State<BusinessHiringScreen> {
                 runSpacing: 8,
                 children: _requiredSkills
                     .map(
-                      (s) => Chip(
-                        label: Text(s,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600)),
-                        backgroundColor: const Color(0xFF1E88E5),
-                        deleteIconColor: Colors.white70,
-                        onDeleted: () =>
-                            setState(() => _requiredSkills.remove(s)),
+                      (s) => Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(s,
+                                style: TextStyle(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 13)),
+                            const SizedBox(width: 6),
+                            GestureDetector(
+                              onTap: () => setState(() => _requiredSkills.remove(s)),
+                              child: Icon(Icons.close_rounded, size: 16, color: AppColors.primary.withValues(alpha: 0.5)),
+                            ),
+                          ],
+                        ),
                       ),
                     )
                     .toList(),
@@ -371,66 +366,46 @@ class _BusinessHiringScreenState extends State<BusinessHiringScreen> {
 
             // Post button
             SizedBox(
-              height: 56,
-              child: ElevatedButton.icon(
-                onPressed: _isPosting ? null : _submitJob,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  padding: EdgeInsets.zero,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
-                ).copyWith(
-                  backgroundColor:
-                      WidgetStateProperty.all(Colors.transparent),
-                ),
-                icon: const SizedBox.shrink(),
-                label: const SizedBox.shrink(),
-              ).copyWith(
-                child: Ink(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: _isPosting
-                          ? [Colors.grey.shade400, Colors.grey.shade400]
-                          : const [Color(0xFF1E88E5), Color(0xFF42A5F5)], // Blue gradient
+              width: double.infinity,
+              height: 52,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: _isPosting
+                      ? LinearGradient(colors: [Colors.grey[400]!, Colors.grey[400]!])
+                      : AppColors.lighterGradient,
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
                     ),
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF1E88E5).withOpacity(0.35),
-                        blurRadius: 16,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
                   child: InkWell(
                     onTap: _isPosting ? null : _submitJob,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(14),
                     child: Center(
                       child: _isPosting
                           ? const SizedBox(
-                              width: 24,
-                              height: 24,
+                              width: 22,
+                              height: 22,
                               child: CircularProgressIndicator(
                                   strokeWidth: 2.5,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white)),
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
                             )
                           : const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.publish_rounded,
-                                    color: Colors.white, size: 22),
-                                SizedBox(width: 10),
-                                Text(
-                                  'Post Job',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
+                                Icon(Icons.publish_rounded, color: Colors.white, size: 20),
+                                SizedBox(width: 8),
+                                Text('Post Job',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700)),
                               ],
                             ),
                     ),
@@ -453,8 +428,8 @@ class _BusinessHiringScreenState extends State<BusinessHiringScreen> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 16,
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 12,
               offset: const Offset(0, 4),
             ),
           ],
@@ -691,9 +666,9 @@ class _BusinessHiringScreenState extends State<BusinessHiringScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
+                  color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: statusColor.withOpacity(0.3)),
+                  border: Border.all(color: statusColor.withValues(alpha: 0.3)),
                 ),
                 child: Text(
                   app.status,
@@ -725,7 +700,7 @@ class _BusinessHiringScreenState extends State<BusinessHiringScreen> {
       child: TextButton(
         onPressed: onTap,
         style: TextButton.styleFrom(
-          backgroundColor: color.withOpacity(0.1),
+          backgroundColor: color.withValues(alpha: 0.1),
           padding: const EdgeInsets.symmetric(horizontal: 12),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
@@ -778,9 +753,9 @@ class _BusinessHiringScreenState extends State<BusinessHiringScreen> {
       labelText: label,
       labelStyle:
           TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),
-      prefixIcon: Icon(icon, color: const Color(0xFF1E88E5), size: 22),
+      prefixIcon: Icon(icon, color: AppColors.primary, size: 20),
       filled: true,
-      fillColor: Colors.white.withOpacity(0.9),
+      fillColor: Colors.grey[50],
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide.none,
@@ -792,7 +767,7 @@ class _BusinessHiringScreenState extends State<BusinessHiringScreen> {
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide:
-            const BorderSide(color: Color(0xFF1E88E5), width: 2.5),
+            const BorderSide(color: AppColors.primary, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
@@ -800,17 +775,6 @@ class _BusinessHiringScreenState extends State<BusinessHiringScreen> {
       ),
       contentPadding:
           const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-    );
-  }
-}
-
-// A tiny extension so we can swap in a `child` on ElevatedButton
-extension on ElevatedButton {
-  ElevatedButton copyWith({Widget? child}) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: style,
-      child: child ?? this.child,
     );
   }
 }

@@ -34,21 +34,16 @@ class _JobsFiltersState extends State<JobsFiltersScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(20),
-      padding: const EdgeInsets.all(24),
+      margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.white, Colors.blue[50]!.withOpacity(0.3)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white, width: 2),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 20,
-            offset: const Offset(0, 6),
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -64,7 +59,7 @@ class _JobsFiltersState extends State<JobsFiltersScreen> {
               prefixIcon: const Icon(Icons.search_rounded,
                   color: AppColors.primary, size: 24),
               filled: true,
-              fillColor: Colors.white.withOpacity(0.9),
+              fillColor: Colors.grey[50],
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide.none,
@@ -106,7 +101,7 @@ class _JobsFiltersState extends State<JobsFiltersScreen> {
               prefixIcon: const Icon(Icons.filter_list_rounded,
                   color: AppColors.primary, size: 24),
               filled: true,
-              fillColor: Colors.white.withOpacity(0.9),
+              fillColor: Colors.grey[50],
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide.none,

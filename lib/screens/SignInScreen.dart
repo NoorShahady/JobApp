@@ -22,7 +22,6 @@ class _SignInScreenState extends State<SignInScreen> {
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   bool _isLoading = false;
-  String _accountType = 'candidate';
 
   @override
   void dispose() {
@@ -188,36 +187,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                Text('I am a', style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 8),
-                SegmentedButton<String>(
-                  segments: const [
-                    ButtonSegment(value: 'candidate', label: Text('Worker'), icon: Icon(Icons.person)),
-                    ButtonSegment(value: 'business', label: Text('Hiring Manager'), icon: Icon(Icons.business)),
-                  ],
-                  selected: {_accountType},
-                  onSelectionChanged: (s) => setState(() => _accountType = s.first),
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.resolveWith<Color?>(
-                          (Set<WidgetState> states) {
-                        if (states.contains(WidgetState.selected)) {
-                          return AppColors.primary.withValues(alpha: 0.2);
-                        }
-                        return null;
-                      },
-                    ),
-                    foregroundColor: WidgetStateProperty.resolveWith<Color?>(
-                          (Set<WidgetState> states) {
-                        if (states.contains(WidgetState.selected)) {
-                          return AppColors.primary;
-                        }
-                        return Colors.black87;
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 Card(
                   elevation: 1,
                   color: Colors.white,

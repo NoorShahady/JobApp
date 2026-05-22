@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../Models/conversation.dart';
+import '../theme/app_theme.dart';
 import 'ChatScreen.dart';
 
 class MessagesListScreen extends StatefulWidget {
@@ -41,6 +42,7 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.surface,
       appBar: AppBar(
         title: const Text('Messages', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,

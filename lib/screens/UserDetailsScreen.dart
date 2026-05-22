@@ -112,56 +112,44 @@ class _JobsFeedScreenState extends State<JobsFeedScreen> {
   Widget _buildJobCard(Job j) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.white, Colors.blue[50]!.withOpacity(0.2)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white, width: 2),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 20,
-            offset: const Offset(0, 6),
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(16),
           onTap: () => _showJob(j),
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             child: Row(
               children: [
                 Container(
-                  width: 64,
-                  height: 64,
+                  width: 56,
+                  height: 56,
                   decoration: BoxDecoration(
-                      gradient: AppColors.lighterGradient,
-                            borderRadius: BorderRadius.circular(18),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primary.withValues(alpha: 0.3),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                    gradient: AppColors.lighterGradient,
+                    borderRadius: BorderRadius.circular(14),
                   ),
                   child: Center(
                     child: Text(
-                      j.company.substring(0, 1),
+                      j.company.isNotEmpty ? j.company[0].toUpperCase() : '?',
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 28,
+                        fontSize: 24,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 18),
+                const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,54 +157,42 @@ class _JobsFeedScreenState extends State<JobsFeedScreen> {
                       Text(
                         j.title,
                         style: const TextStyle(
-                          fontSize: 19,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
                           color: Colors.black87,
-                          letterSpacing: -0.3,
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 4),
                       Text(
                         '${j.company} • ${j.location}',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 13,
                           color: Colors.grey[600],
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6),
+                            horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.blue[50]!, Colors.purple[50]!],
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.blue[200]!),
+                          color: AppColors.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           j.workType,
                           style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.blue[800],
-                            letterSpacing: 0.3,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary,
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.arrow_forward_rounded,
-                      color: Colors.grey[600], size: 20),
-                ),
+                Icon(Icons.chevron_right_rounded,
+                    color: Colors.grey[400], size: 24),
               ],
             ),
           ),
@@ -279,24 +255,16 @@ class _JobsFeedScreenState extends State<JobsFeedScreen> {
                   padding:
                   const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: Colors.green[50],
+                    color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.work_outline,
-                          size: 16, color: Colors.green[700]),
-                      const SizedBox(width: 6),
-                      Text(
-                        j.workType,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.green[700],
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    j.workType,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 28),
@@ -336,47 +304,41 @@ class _JobsFeedScreenState extends State<JobsFeedScreen> {
 
         return Column(
           children: [
-            Container(
-              height: 56,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: hasApplied
-                      ? [Colors.grey[400]!, Colors.grey[500]!]
-                      : [Colors.green[600]!, Colors.green[800]!],
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: hasApplied
+                      ? LinearGradient(colors: [Colors.grey[400]!, Colors.grey[400]!])
+                      : AppColors.lighterGradient,
+                  borderRadius: BorderRadius.circular(14),
                 ),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: (hasApplied ? Colors.grey : Colors.green).withOpacity(0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
-                  onTap: hasApplied
-                      ? null
-                      : () => _applyForJob(j, user),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        hasApplied ? Icons.check_circle : Icons.send_rounded,
-                        color: Colors.white,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(14),
+                    onTap: hasApplied ? null : () => _applyForJob(j, user),
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            hasApplied ? Icons.check_circle : Icons.send_rounded,
+                            color: Colors.white, size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            hasApplied ? 'Applied' : 'Apply Now',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 12),
-                      Text(
-                        hasApplied ? 'Applied' : 'Apply Now',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -384,17 +346,18 @@ class _JobsFeedScreenState extends State<JobsFeedScreen> {
             if (j.employerId.isNotEmpty) ...[
               const SizedBox(height: 12),
               SizedBox(
+                width: double.infinity,
                 height: 48,
                 child: OutlinedButton.icon(
                   onPressed: () => _openChatWithEmployer(j, user),
-                  icon: const Icon(Icons.chat_outlined),
+                  icon: const Icon(Icons.chat_outlined, size: 18),
                   label: const Text('Message Employer',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.blue[700],
-                    side: BorderSide(color: Colors.blue[300]!),
+                    foregroundColor: AppColors.primary,
+                    side: BorderSide(color: AppColors.primary.withValues(alpha: 0.3)),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)),
+                        borderRadius: BorderRadius.circular(14)),
                   ),
                 ),
               ),
